@@ -243,6 +243,7 @@ class DataPrepper:
         feature_results["doc_id"] = []  # capture the doc id so we can join later
         feature_results["query_id"] = []  # ^^^
         feature_results["sku"] = []
+        feature_results["name_match"] = []
         
         for document in documents:
 
@@ -253,7 +254,10 @@ class DataPrepper:
             # If a feature isn’t present for a particular document, you should set that feature value to zero. 
             log_entries = document["fields"]["_ltrlog"][0]["log_entry"]
             for entry in log_entries:
-                feature_results[entry.get("name")] = entry.get("value")
+                if not feature_results.get(entry['name']):
+                    feature_results[entry['name']] = [entry.get('value', 0)]
+                else:
+                    feature_results[entry['name']].append(entry.get('value', 0))
 
         frame = pd.DataFrame(feature_results)
         return frame.astype({'doc_id': 'int64', 'query_id': 'int64', 'sku': 'int64'})

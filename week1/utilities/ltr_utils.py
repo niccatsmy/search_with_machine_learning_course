@@ -8,6 +8,7 @@ def create_rescore_ltr_query(user_query: str, query_obj, click_prior_query: str,
                              active_features=None, # an array of strings
                              rescore_size=500, main_query_weight=1, rescore_query_weight=2):
     # Create the base query, use a much bigger window
+    # https://www.elastic.co/guide/en/elasticsearch/reference/7.10/filter-search-results.html#rescore
     #add on the rescore
     ##### Step 4.e:
     query_obj["rescore"] = {
@@ -22,7 +23,6 @@ def create_rescore_ltr_query(user_query: str, query_obj, click_prior_query: str,
                     "model": ltr_model_name,
                     # Since we are using a named store, as opposed to simply '_ltr', we need to pass it in
                     "store": ltr_store_name,
-                    "active_features": active_features
                 }
             },
             "rescore_query_weight": rescore_query_weight # Magic number, but let's say LTR matches are 2x baseline matches
